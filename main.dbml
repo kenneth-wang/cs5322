@@ -1,0 +1,71 @@
+Table agent as A {
+  id int [pk, increment]
+  username varchar [unique]
+  password varchar
+  is_cso bool  // TODO: Appropriate, or need separate CSO table?
+}
+
+// CUSTOMER STUFF
+Table customer as C {
+  id int [pk, increment]
+  username varchar [unique]
+  password varchar
+  
+  // PII
+  // TODO: Need your help Kenneth
+  name varchar
+  nric char(9) [unique]
+  monthly_salary int [note: "in USD dollars"]
+  monthly_expenses int  // required?
+  
+  // Company data
+  payment_method_id int [ref: > customer.payment_methods.id]
+  agent_id int [not null, ref: <> agent.id]
+}
+
+// Separate table since multiple customers can share same
+// refund channels
+Table customer.payment_methods {
+  id int [pk, increment]
+  
+  // Payment information
+  // See: https://www.worldremit.com/en/singapore/faq/bank-transfer
+  full_name varchar  // specific to this method
+  mobile_number int  // assume Singapore numbers
+  bank_name varchar
+  branch_name varchar
+  account_number int
+  bank_code int [note: "3 digits long"]
+}
+
+// TODO: Is this how this works?
+//       - Every customer has a list of agents they can
+//         talk to, who may be tagged as a CSO or not
+//       - Each agent/CSO can deal with multiple clients
+Table customer_assignments {
+  agent_id int [ref: > agent.id]
+  customer_id int [ref: > customer.id]
+  Indexes {
+    (agent_id, customer_id) [pk]
+  }
+}
+
+Table insurance.claims {
+  id int [pk, increment]
+  plan_id int [ref: > insurance.plans.id]
+  customer_id int [ref: > customer.id]
+  value float
+}
+
+Table insurance.purchases {
+  id int [pk, increment]
+  plan_id int [ref: > insurance.plans.id]
+  agent_id int [ref: > agent.id]
+  customer_id int [ref: > customer.id]
+}
+
+Table insurance.plans {
+  id int [pk, increment]
+  value int
+  policy_description varchar(max)
+}
