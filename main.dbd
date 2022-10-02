@@ -2,7 +2,7 @@
 
 Planner
 ----
-planner_id number(10)
+planner_id number(10) pk
 username varchar2(50) unique
 password varchar2(50)
 
