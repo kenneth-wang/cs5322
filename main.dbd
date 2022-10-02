@@ -1,79 +1,97 @@
-agents
+# Default visibility: Product owner can see everything
+
+Planner
 ----
-id number(10) pk
+planner_id number(10)
 username varchar2(50) unique
 password varchar2(50)
-name varchar2(50)
-mobile_number varchar2(50)
-email_address varchar2(50)
-  
-payment_methods
+
+Plan
 ----
-id number(10) pk
-full_name varchar2(50)  # specific to this method
-mobile_number varchar2(50)  # assume Singapore numbers
+plan_id number(10) pk
+plan_name varchar2(100)
+plan_created_by number(10) fk >- Planner.planner_id
+description varchar2(4000)
+
+# Visibility: Only visible to own 
+Agent
+----
+agent_id number(10) pk
+username varchar2(50) unique  # to hash
+password varchar2(50)
+agent_name varchar2(50)
+mobile_number number(8)  # assume Singapore numbers
+email_address varchar2(50)
+
+Customer
+----
+customer_id number(10) pk
+username varchar2(50) unique
+password varchar2(50)  # to hash
+customer_name varchar2(50)
+customer_nric nchar(9) unique
+date_of_birth date
+date_joined date
+address varchar2(100)
+monthly_salary number(10,-2)
+monthly_expenses number(10,-2)
+mobile_number number(8)
+email_address varchar2(50)
+payment_method_id number(10) fk >- Payment.payment_id NULLABLE
+agent_id number(10) fk >- Agent.agent_id
+
+Payment  # Payment details of payee for Customer
+----
+payment_id number(10) pk
+payee_name varchar2(50)
+mobile_number number(8)  # assume Singapore numbers
 bank_name varchar2(50)
 branch_name varchar2(50)
 account_number number(10)
 bank_code number(3)
 
-customers
+# Do not track plan_id, Customer can be paying
+# for more than one plan
+Premium  # Premiums paid by Customer
 ----
-id int pk
-username varchar2(50) unique
-password varchar2(50)
-name varchar2(50)
-nric nchar(9) unique
-monthly_salary number(10)
-monthly_expenses number(10)
-mobile_number varchar2(50) 
-email_address varchar2(50)
-payment_method_id number(10) fk >- payment_methods.id
-agent_id number(10) fk >- agents.id
-
-insurance_plans
-----
-id number(10) pk
-value number(10)
-policy_description varchar2(100)
-
-
-
-insurance_premiums
-----
-id number(10) pk
-plan_id number(10) fk >- insurance_plans.id
-customer_id number(10) fk >- customers.id
+premium_id number(10) pk
+customer_id number(10) fk >- Customer.customer_id
 payment_date date
-payment_value_usd float(10)
+payment_value_sgd number(10,2)
+bank_transaction_id varchar2(100)
 
-customer_assignments
+Purchase  # If need update, to terminate existing and create new row
 ----
-agent_id number(10) FK >- agents.id
-customer_id number(10) FK >- customers.id
-
-insurance_purchases
-----
-id number(10) pk
-plan_id number(10) fk >- insurance_plans.id
-agent_id number(10) fk >- agents.id
-customer_id number(10) fk >- customers.id
+purchase_id number(10) pk
+plan_id number(10) fk >- Plan.plan_id
+customer_id number(10) fk >- Customer.customer_id
+agent_id number(10) fk >- Agent.agent_id  # commissioned Agent
+plan_details varchar2(4000)
 purchase_date date
-purchase_value float(10)
+purchase_value_sgd number(10,2)  # assumed fixed, monthly premiums
 policy_start_date date
 policy_end_date date  # determines if policy in effect
 
-insurance_claims
+Financer
 ----
-id number(10) pk
-plan_id number(10) fk >- insurance_plans.id
-customer_id number(10) fk >- customers.id
+financer_id number(10) pk
+username varchar2(50) unique
+password varchar2(50)
+
+Claim
+----
+claim_id number(10) pk
+plan_id number(10) fk >- Plan.plan_id
+claim_submitted_by number(10) fk >- Agent.agent_id
+claim_submitted_for number(10) fk >- Customer.customer_id
+claim_value number(10,2)
 claim_justification varchar2(100)
-claim_value float(10)
-claim_submitted_date date null #default: `today()`
-claim_approved number(1,0)
-claim_processed_date date
-comments varchar2(100)
-claim_disimbursed number(1,0)
-claim_disimbursed_date date
-bank_transaction_id varchar2(50)
+claim_submitted_date date
+claim_processed_by number(10) NULLABLE fk >- Financer.financer_id
+claim_processed_date date NULLABLE
+claim_processed_comment varchar2(100) NULLABLE
+claim_approved number(1,0) NULLABLE  # 1 or 0
+claim_disimbursed_date date NULLABLE
+claim_disimbursed number(1,0) NULLABLE  # 1 or 0
+claim_disimbursed_via number(10) NULLABLE fk >- Payment.payment_id
+bank_transaction_id varchar2(100) NULLABLE
