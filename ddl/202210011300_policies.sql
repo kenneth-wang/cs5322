@@ -1,6 +1,3 @@
--- Allow scott to create table
-GRANT CREATE TABLE TO scott;
-ALTER USER scott quota unlimited on USERS;
 
 -- Create orders_ctx application context
 CREATE OR REPLACE CONTEXT agent_ctx USING agent_ctx_pkg;
