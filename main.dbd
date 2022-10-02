@@ -1,0 +1,79 @@
+agents
+----
+id number(10) pk
+username varchar2(50) unique
+password varchar2(50)
+name varchar2(50)
+mobile_number varchar2(50)
+email_address varchar2(50)
+  
+payment_methods
+----
+id number(10) pk
+full_name varchar2(50)  # specific to this method
+mobile_number varchar2(50)  # assume Singapore numbers
+bank_name varchar2(50)
+branch_name varchar2(50)
+account_number number(10)
+bank_code number(3)
+
+customers
+----
+id int pk
+username varchar2(50) unique
+password varchar2(50)
+name varchar2(50)
+nric nchar(9) unique
+monthly_salary number(10)
+monthly_expenses number(10)
+mobile_number varchar2(50) 
+email_address varchar2(50)
+payment_method_id number(10) fk >- payment_methods.id
+agent_id number(10) fk >- agents.id
+
+insurance_plans
+----
+id number(10) pk
+value number(10)
+policy_description varchar2(100)
+
+
+
+insurance_premiums
+----
+id number(10) pk
+plan_id number(10) fk >- insurance_plans.id
+customer_id number(10) fk >- customers.id
+payment_date date
+payment_value_usd float(10)
+
+customer_assignments
+----
+agent_id number(10) FK >- agents.id
+customer_id number(10) FK >- customers.id
+
+insurance_purchases
+----
+id number(10) pk
+plan_id number(10) fk >- insurance_plans.id
+agent_id number(10) fk >- agents.id
+customer_id number(10) fk >- customers.id
+purchase_date date
+purchase_value float(10)
+policy_start_date date
+policy_end_date date  # determines if policy in effect
+
+insurance_claims
+----
+id number(10) pk
+plan_id number(10) fk >- insurance_plans.id
+customer_id number(10) fk >- customers.id
+claim_justification varchar2(100)
+claim_value float(10)
+claim_submitted_date date null #default: `today()`
+claim_approved number(1,0)
+claim_processed_date date
+comments varchar2(100)
+claim_disimbursed number(1,0)
+claim_disimbursed_date date
+bank_transaction_id varchar2(50)
