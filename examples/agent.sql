@@ -1,0 +1,8 @@
+-- Can only see his/her own customers
+
+SELECT * FROM SYSTEM.CUSTOMER;
+
+-- Can only see payment methods of his/her own customers
+
+SELECT * FROM SYSTEM.PAYMENT;
+SELECT * FROM SYSTEM.CUSTOMER INNER JOIN SYSTEM.PAYMENT ON SYSTEM.CUSTOMER.PAYMENT_METHOD_ID = SYSTEM.PAYMENT.PAYMENT_ID;
