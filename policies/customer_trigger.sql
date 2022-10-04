@@ -1,0 +1,37 @@
+-- Create application context
+CREATE OR REPLACE CONTEXT CUSTOMER_CTX USING CUSTOMER_CTX_PKG;
+
+-- Create a PL/SQL package to set the application context
+CREATE OR REPLACE PACKAGE CUSTOMER_CTX_PKG IS
+    PROCEDURE SET_CUSTOMERID;
+END;
+/
+
+CREATE OR REPLACE PACKAGE BODY CUSTOMER_CTX_PKG IS
+    PROCEDURE SET_CUSTOMERID AS
+        CUSTOMERID NUMBER;
+    BEGIN
+        SELECT
+            CUSTOMER_ID INTO CUSTOMERID
+        FROM
+            SYSTEM.CUSTOMER
+        WHERE
+            USERNAME = SYS_CONTEXT('USERENV',
+            'SESSION_USER');
+        DBMS_SESSION.SET_CONTEXT('customer_ctx', 'customer_id', CUSTOMERID);
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            NULL;
+    END SET_CUSTOMERID;
+END;
+/
+
+-- Create a logon trigger to run the application context PL/SQL package
+CREATE TRIGGER SET_CUSTOMERID_CTX_TRIG AFTER LOGON ON DATABASE
+BEGIN
+    CUSTOMER_CTX_PKG.SET_CUSTOMERID;
+END;
+/
+
+-- Used to delete the context trigger (use only when needed)
+DROP TRIGGER SET_CUSTOMERID_CTX_TRIG;

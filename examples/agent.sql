@@ -1,3 +1,10 @@
+-- Check in env var are initialized
+SELECT SYS_CONTEXT('agent_ctx', 'agent_id') agentid FROM DUAL;
+
+EXEC DBMS_SESSION.SET_IDENTIFIER('agent');
+
+SELECT SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER') AS END_USER FROM DUAL;
+
 -- Can only see his/her own customers
 
 SELECT * FROM SYSTEM.CUSTOMER;

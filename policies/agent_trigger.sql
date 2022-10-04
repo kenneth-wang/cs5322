@@ -1,0 +1,34 @@
+-- Create application context
+CREATE OR REPLACE CONTEXT AGENT_CTX USING AGENT_CTX_PKG;
+
+-- Create a PL/SQL package to set the application context
+CREATE OR REPLACE PACKAGE AGENT_CTX_PKG IS
+    PROCEDURE SET_AGENTID;
+END;
+/
+
+CREATE OR REPLACE PACKAGE BODY AGENT_CTX_PKG IS
+    PROCEDURE SET_AGENTID AS
+        AGENTID NUMBER;
+    BEGIN
+        SELECT
+            AGENT_ID INTO AGENTID
+        FROM
+            SYSTEM.AGENT
+        WHERE
+            USERNAME = SYS_CONTEXT('USERENV',
+            'SESSION_USER');
+        DBMS_SESSION.SET_CONTEXT('agent_ctx', 'agent_id', AGENTID);
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            NULL;
+    END SET_AGENTID;
+END;
+/
+
+-- Create a logon trigger to run the application context PL/SQL package
+CREATE TRIGGER SET_AGENTID_CTX_TRIG AFTER LOGON ON DATABASE
+BEGIN
+    AGENT_CTX_PKG.SET_AGENTID;
+END;
+/
