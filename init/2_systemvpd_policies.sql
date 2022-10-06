@@ -233,3 +233,86 @@ BEGIN
     );
 END;
 /
+
+
+-- financer policy function
+CREATE OR REPLACE FUNCTION GET_FINANCER(
+    SCHEMA_P IN VARCHAR2,
+    TABLE_P IN VARCHAR2
+) RETURN VARCHAR2 AS
+    PRED VARCHAR2 (400);
+BEGIN
+    IF LOWER(SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')) = 'financer'
+        THEN PRED := 'financer_id = SYS_CONTEXT(''financer_ctx'', ''financer_id'')';
+    ELSE NULL;
+    END IF;
+    RETURN PRED;
+END;
+/
+
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        OBJECT_SCHEMA => 'system',
+        OBJECT_NAME => 'financer',
+        POLICY_NAME => 'financer_policy',
+        POLICY_FUNCTION => 'get_financer',
+        STATEMENT_TYPES => 'select',
+        POLICY_TYPE => DBMS_RLS.CONTEXT_SENSITIVE
+    );
+END;
+/
+
+
+-- Planner policy function
+CREATE OR REPLACE FUNCTION GET_PLANNER(
+    SCHEMA_P IN VARCHAR2,
+    TABLE_P IN VARCHAR2
+) RETURN VARCHAR2 AS
+    PRED VARCHAR2 (400);
+BEGIN
+    IF LOWER(SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')) = 'planner'
+        THEN PRED := 'planner_id = SYS_CONTEXT(''planner_ctx'', ''planner_id'')';
+    ELSE NULL;
+    END IF;
+    RETURN PRED;
+END;
+/
+
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        OBJECT_SCHEMA => 'system',
+        OBJECT_NAME => 'planner',
+        POLICY_NAME => 'planner_policy',
+        POLICY_FUNCTION => 'get_planner',
+        STATEMENT_TYPES => 'select',
+        POLICY_TYPE => DBMS_RLS.CONTEXT_SENSITIVE
+    );
+END;
+/
+
+-- Agent policy function
+CREATE OR REPLACE FUNCTION GET_AGENT(
+    SCHEMA_P IN VARCHAR2,
+    TABLE_P IN VARCHAR2
+) RETURN VARCHAR2 AS
+    PRED VARCHAR2 (400);
+BEGIN
+    IF LOWER(SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')) = 'agent'
+        THEN PRED := 'agent_id = SYS_CONTEXT(''agent_ctx'', ''agent_id'')';
+    ELSE NULL;
+    END IF;
+    RETURN PRED;
+END;
+/
+
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        OBJECT_SCHEMA => 'system',
+        OBJECT_NAME => 'agent',
+        POLICY_NAME => 'agent_policy',
+        POLICY_FUNCTION => 'get_agent',
+        STATEMENT_TYPES => 'select',
+        POLICY_TYPE => DBMS_RLS.CONTEXT_SENSITIVE
+    );
+END;
+/
