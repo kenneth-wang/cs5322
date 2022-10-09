@@ -2,13 +2,13 @@
 
 Planner
 ----
-planner_id number(10) pk
+planner_id number pk autoincrement
 username varchar2(50) unique
 password varchar2(50)
 
 Plan
 ----
-plan_id number(10) pk
+plan_id number pk autoincrement
 plan_name varchar2(100)
 plan_created_by number(10) fk >- Planner.planner_id
 description varchar2(4000)
@@ -16,7 +16,7 @@ description varchar2(4000)
 # Visibility: Only visible to own 
 Agent
 ----
-agent_id number(10) pk
+agent_id number pk autoincrement
 username varchar2(50) unique  # to hash
 password varchar2(50)
 agent_name varchar2(50)
@@ -25,7 +25,7 @@ email_address varchar2(50)
 
 Customer
 ----
-customer_id number(10) pk
+customer_id number pk autoincrement
 username varchar2(50) unique
 password varchar2(50)  # to hash
 customer_name varchar2(50)
@@ -42,7 +42,7 @@ agent_id number(10) fk >- Agent.agent_id
 
 Payment  # Payment details of payee for Customer
 ----
-payment_id number(10) pk
+payment_id number pk autoincrement
 payee_name varchar2(50)
 mobile_number number(8)  # assume Singapore numbers
 bank_name varchar2(50)
@@ -54,7 +54,7 @@ bank_code number(3)
 # for more than one plan
 Premium  # Premiums paid by Customer
 ----
-premium_id number(10) pk
+premium_id number pk autoincrement
 customer_id number(10) fk >- Customer.customer_id
 payment_date date
 payment_value_sgd number(10,2)
@@ -62,7 +62,7 @@ bank_transaction_id varchar2(100)
 
 Purchase  # If need update, to terminate existing and create new row
 ----
-purchase_id number(10) pk
+purchase_id number pk autoincrement
 plan_id number(10) fk >- Plan.plan_id
 customer_id number(10) fk >- Customer.customer_id
 agent_id number(10) fk >- Agent.agent_id  # commissioned Agent
@@ -74,13 +74,13 @@ policy_end_date date  # determines if policy in effect
 
 Financer
 ----
-financer_id number(10) pk
+financer_id number pk autoincrement
 username varchar2(50) unique
 password varchar2(50)
 
 Claim
 ----
-claim_id number(10) pk
+claim_id number pk autoincrement
 plan_id number(10) fk >- Plan.plan_id
 claim_submitted_by number(10) fk >- Agent.agent_id
 claim_submitted_for number(10) fk >- Customer.customer_id
