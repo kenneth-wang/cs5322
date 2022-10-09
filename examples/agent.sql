@@ -1,4 +1,4 @@
--- Check in env var are initialized
+-- Check if env var are initialized
 SELECT SYS_CONTEXT('agent_ctx', 'agent_id') agentid FROM DUAL;
 
 EXEC DBMS_SESSION.SET_IDENTIFIER('agent');
@@ -21,13 +21,11 @@ INSERT INTO SYSTEM.CUSTOMER (CUSTOMER_ID, USERNAME, PASSWORD, CUSTOMER_NAME, CUS
 SELECT * FROM SYSTEM.Plan;
 
 -- Can see own row in Agent table
-SELECT * FROM SYSTEM.Agent
+SELECT * FROM SYSTEM.Agent;
 
 -- Can add payment information
 INSERT INTO SYSTEM.PAYMENT (PAYEE_NAME, MOBILE_NUMBER, BANK_NAME, BRANCH_NAME, ACCOUNT_NUMBER, BANK_CODE) VALUES ('Payee', '91110000', 'POSB', 'Jurong Point', '100889', '1');
 
 -- Can add purchase information
 INSERT INTO SYSTEM.PURCHASE (PLAN_ID, CUSTOMER_ID, AGENT_ID, PLAN_DETAILS, PURCHASE_DATE, PURCHASE_VALUE_SGD, POLICY_START_DATE, POLICY_END_DATE) VALUES ('21', '1', '1', 'This plan lasts for 2 years', TO_DATE('6/10/2022', 'DD-MM-YYYY HH24:MI:SS'), '50000', TO_DATE('6/10/2022', 'DD-MM-YYYY HH24:MI:SS'), TO_DATE('6/10/2024', 'DD-MM-YYYY HH24:MI:SS'));
-
--- Can reassign a customer to themselves!! <-- violation of policy???
-UPDATE SYSTEM.CUSTOMER SET AGENT_ID = '5' WHERE CUSTOMER_ID = '1' AND AGENT_ID = 'EXISTING_ID';
+SELECT * FROM SYSTEM.PURCHASE;
