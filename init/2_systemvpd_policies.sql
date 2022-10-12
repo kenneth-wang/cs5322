@@ -245,7 +245,7 @@ BEGIN
     ELSIF LOWER(SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')) = 'customer'
         THEN PRED := 'claim_submitted_for in (select customer_id from system.customer)';
     ELSIF LOWER(SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')) = 'financer'
-        THEN PRED := 'claims_processed_by SYS_CONTEXT(''financer_ctx'', ''financer_id'')';
+        THEN PRED := 'claim_processed_by = SYS_CONTEXT(''financer_ctx'', ''financer_id'')';
     ELSE NULL;
     END IF;
     RETURN PRED;
