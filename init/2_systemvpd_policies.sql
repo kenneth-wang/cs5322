@@ -82,6 +82,36 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE FUNCTION UPDATE_CUSTOMER(
+    SCHEMA_P IN VARCHAR2,
+    TABLE_P IN VARCHAR2
+) RETURN VARCHAR2 AS
+    PRED VARCHAR2 (400);
+BEGIN
+    IF LOWER(SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')) = 'agent' THEN
+        PRED := 'agent_id = SYS_CONTEXT(''agent_ctx'', ''agent_id'')';
+    ELSIF LOWER(SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER')) = 'customer' THEN
+        PRED := 'customer_id = SYS_CONTEXT(''customer_ctx'', ''customer_id'')';
+    ELSE
+        NULL;
+    END IF;
+    RETURN PRED;
+END;
+/
+
+BEGIN
+    DBMS_RLS.ADD_POLICY (
+        OBJECT_SCHEMA => 'system',
+        OBJECT_NAME => 'customer',
+        POLICY_NAME => 'update_customer_policy',
+        POLICY_FUNCTION => 'update_customer',
+        STATEMENT_TYPES => 'update',
+        POLICY_TYPE => DBMS_RLS.CONTEXT_SENSITIVE
+    );
+END;
+/
+
+
 CREATE OR REPLACE FUNCTION HIDE_COLS_CUSTOMER(
     SCHEMA_P IN VARCHAR2,
     TABLE_P IN VARCHAR2
