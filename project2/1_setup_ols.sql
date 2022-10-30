@@ -1,0 +1,57 @@
+----------------------------------
+-- SUMMARY OF OLS INITIAL ADMIN --
+----------------------------------
+
+---- AS SYSTEM
+-- Initialize project tablespace
+-- Revert: DROP TABLESPACE PROJECT2 INCLUDING CONTENTS;
+CREATE TABLESPACE PROJECT2
+  DATAFILE 'ay2122_cs5322_project2'
+  SIZE 10M REUSE
+  AUTOEXTEND ON;
+
+-- See created tablespace
+SELECT
+  TABLESPACE_NAME, 
+  FILE_NAME, 
+  BYTES/1024/1024 MB
+FROM DBA_DATA_FILES;
+
+-- Check OLS enabled status
+SELECT * FROM DBA_OLS_STATUS;
+
+-- Unlock LBACSYS account
+-- i.e. Label-Based Access Control System
+-- Revert: ALTER USER LBACSYS ACCOUNT LOCK;
+ALTER USER LBACSYS IDENTIFIED BY myNewPassword ACCOUNT UNLOCK;
+
+-- Create user account for performing LBAC admin duties
+-- Revert: DROP USER PROJECT2_DBA CASCADE;
+CREATE USER PROJECT2_DBA IDENTIFIED BY myNewPassword DEFAULT TABLESPACE PROJECT2;
+GRANT CONNECT TO PROJECT2_DBA; -- i.e. GRANT CREATE SESSION TO PROJECT2_DBA;
+SELECT * FROM DBA_USERS WHERE USERNAME='PROJECT2_DBA';
+
+---- AS LBACSYS
+-- Grant LBAC_DBA role and EXECUTE privilege on SA_SYSDBA
+-- Revert: REVOKE LBAC_DBA FROM PROJECT2_DBA;
+GRANT LBAC_DBA TO PROJECT2_DBA;
+SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE='PROJECT2_DBA';
+
+
+-- Grant corresponding privileges, namely:
+GRANT EXECUTE ON SA_SYSDBA TO PROJECT2_DBA; -- to create policies
+GRANT EXECUTE ON SA_COMPONENTS TO PROJECT2_DBA; -- to create level, comp, group
+GRANT EXECUTE ON SA_LABEL_ADMIN TO PROJECT2_DBA; -- to create labels
+GRANT EXECUTE ON SA_USER_ADMIN TO PROJECT2_DBA; -- to authorize users for OLS
+GRANT SELECT ON DBA_SA_USER_LEVELS TO PROJECT2_DBA; -- to see current OLS users
+GRANT SELECT ON DBA_SA_USER_COMPARTMENTS TO PROJECT2_DBA; -- to see current OLS user compartments
+GRANT SELECT ON DBA_SA_USER_GROUPS TO PROJECT2_DBA; -- to see current OLS user groups
+GRANT SELECT ON DBA_SA_USER_PRIVS TO PROJECT2_DBA; -- to see current OLS user privileges
+GRANT EXECUTE ON SA_POLICY_ADMIN TO PROJECT2_DBA; -- to apply policies to tables/schemas
+
+-- Possibly related:
+-- Check DBA system privileges: SELECT * FROM DBA_SYS_PRIVS;
+-- Check assignment of user roles: SELECT * FROM USER_ROLE_PRIVS;
+-- Check all roles: SELECT * FROM DBA_ROLES;
+-- Might be needed: GRANT INHERIT PRIVILEGES ON USER SYSTEM TO LBACSYS;
+-- Might be useful: GRANT EXEMPT ACCESS POLICY TO PROJECT2_DBA;
