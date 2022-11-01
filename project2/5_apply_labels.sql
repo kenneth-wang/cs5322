@@ -62,7 +62,7 @@ END;
 
 -- Change data label to be applied by default
 BEGIN
-  SA_SESSION.SET_LABEL('INVENTORY_OLS_POL','TS:C:AIRFORCE');
+  SA_SESSION.SET_ROW_LABEL('INVENTORY_OLS_POL','TS:C:AIRFORCE');
 END;
 /
 
