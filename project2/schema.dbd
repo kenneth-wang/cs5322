@@ -1,0 +1,33 @@
+"INVENTORY.MISSION"
+---
+id number pk autoincrement
+name varchar2(256)
+description varchar2(256)
+
+"INVENTORY.MISSION_ITEMS"
+---
+mission_id number FK >- "INVENTORY.MISSION".id
+item_id number FK >- "INVENTORY.ITEM".id
+count number(3)
+
+"INVENTORY.MISSION_VEHICLES"
+---
+mission_id number FK >- "INVENTORY.MISSION".id
+vehicle_id number FK >- "INVENTORY.VEHICLE".id
+count number(3)
+
+"INVENTORY.ITEM"
+---
+id number pk autoincrement
+name varchar2(256)
+type varchar2(256)
+count number(3)
+description varchar2(50)
+
+"INVENTORY.VEHICLE"
+---
+id number pk autoincrement
+model varchar2(256)
+type varchar2(256)
+count number(3)
+description varchar2(256)
