@@ -1,6 +1,5 @@
--- PROJECT2_TEST_OTHER1
-DECLARE
-  user_label number(5) := SYS_CONTEXT('lbac$0_lab', 'lbac$default_row_tag');
+-- CHIEF_COMM
+
 BEGIN
     INSERT INTO INVENTORY.VEHICLE VALUES (NULL,'CH-47 Chinook','aircraft','90','The Boeing CH-47 Chinook is a tandem rotor helicopter developed by American rotorcraft company Vertol and manufactured by Boeing Vertol. ',CHAR_TO_LABEL('INVENTORY_OLS_POL','C:T:D2'));
     INSERT INTO INVENTORY.VEHICLE VALUES (NULL,'UH-1 Iroquois','aircraft','69','The Bell UH-1 Iroquois is a utility military helicopter designed and produced by the American aerospace company Bell Helicopter.',CHAR_TO_LABEL('INVENTORY_OLS_POL','C:T:D2'));
@@ -18,7 +17,7 @@ BEGIN
     INSERT INTO INVENTORY.VEHICLE VALUES (NULL,'Battalion Casualty Station','medical','93','The BCS is a fully equipped medical station mounted on a military 5-ton truck. It can provide triage and treatment for casualties.',CHAR_TO_LABEL('INVENTORY_OLS_POL','C:M:D4'));
 
     INSERT INTO INVENTORY.ITEM VALUES (NULL,'ak-47','weapon','70','A very lethal gun.',CHAR_TO_LABEL('INVENTORY_OLS_POL','S:C:'));
-    INSERT INTO INVENTORY.ITEM VALUES (NULL,'plaster','medical','19','An adhesive strip of material for covering cuts and wounds.',CHAR_TO_LABEL('INVENTORY_OLS_POL','C:M:'));
+    INSERT INTO INVENTORY.ITEM VALUES (NULL,'plaster','medical','19','An adhesive strip of material for covering cuts and wounds.',CHAR_TO_LABEL('INVENTORY_OLS_POL','TS:M:'));
     INSERT INTO INVENTORY.ITEM VALUES (NULL,'carbine','weapon','16','A firearm similar to a lightweight rifle but with a shorter barrel.',CHAR_TO_LABEL('INVENTORY_OLS_POL','S:C:'));
     INSERT INTO INVENTORY.ITEM VALUES (NULL,'iodine','medical','89','A solution of iodine in alcohol, used as a mild antiseptic.',CHAR_TO_LABEL('INVENTORY_OLS_POL','C:M:'));
     INSERT INTO INVENTORY.ITEM VALUES (NULL,'nuclear weapon','weapon','97','A weapon using nuclear energy.',CHAR_TO_LABEL('INVENTORY_OLS_POL','TS:C:'));
@@ -26,7 +25,9 @@ BEGIN
     INSERT INTO INVENTORY.ITEM VALUES (NULL,'car battery','transport','49','Batteries to power up your car.',CHAR_TO_LABEL('INVENTORY_OLS_POL','C:M:'));
     INSERT INTO INVENTORY.ITEM VALUES (NULL,'winter tyres','transport','48','Battle-tested tyres that can brave through the cold winter.',CHAR_TO_LABEL('INVENTORY_OLS_POL','S:T:'));
     
-    INSERT INTO INVENTORY.MISSION VALUES (NULL,'Operation Nightmare','An operation that gives people nightmares',user_label);
+    INSERT INTO INVENTORY.MISSION VALUES (NULL,'Operation Nightmare','An operation that gives people nightmares',CHAR_TO_LABEL('INVENTORY_OLS_POL','TS:C,M,T:JOINT'));
+    INSERT INTO INVENTORY.MISSION VALUES (NULL,'Operation Red Dawn','A peacekeeping mission',CHAR_TO_LABEL('INVENTORY_OLS_POL','C:M,T:D2'));
+    INSERT INTO INVENTORY.MISSION VALUES (NULL,'Operation Sparta','A joint-force mission',CHAR_TO_LABEL('INVENTORY_OLS_POL','TS:T,C,M:JOINT'));
   COMMIT;
 END;
 /
