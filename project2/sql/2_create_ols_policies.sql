@@ -247,6 +247,22 @@ BEGIN
       END LOOP;
     END LOOP;
   END LOOP;
+
+  ---------------------------------------------------------------------------
+  -- No groups, data-only, only max one of each compartment
+  FOR CIDX IN SINGLE_COMPARTMENTS.FIRST..SINGLE_COMPARTMENTS.LAST
+  LOOP
+    FOR LIDX IN ALL_LEVELS.FIRST..ALL_LEVELS.LAST
+    LOOP
+      IDX_COUNTER := IDX_COUNTER + 1;
+      SA_LABEL_ADMIN.CREATE_LABEL (
+        policy_name => 'INVENTORY_OLS_POL',
+        label_tag => IDX_COUNTER,
+        label_value => ALL_LEVELS(LIDX)||':'||SINGLE_COMPARTMENTS(CIDX)||':',
+        data_label => TRUE);
+    END LOOP;
+  END LOOP;
+
 END;
 /
 SELECT * FROM ALL_SA_LABELS;
